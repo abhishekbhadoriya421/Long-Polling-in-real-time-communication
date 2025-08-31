@@ -7,18 +7,17 @@ let clients = [];
 
 app.get('/poll', (req, res) => {
     console.log("Connecttion Stablished with client... ");
-
-    clients.push(res);
-
+    let clientName = req.query.name;
+    clients.push({ 'res': res, 'name': clientName });
     req.on("close", () => {
-        clients = clients.filter(client => client !== res);
+        clients = clients.filter(client => client.res !== res);
     });
 });
 
 setInterval(() => {
     if (clients.length >= 1) {
         console.log("Broadcasting new data...");
-        clients.forEach(res => res.json({ message: "Hello at " + new Date() }));
+        clients.forEach(client => client.res.json({ message: `${client.name} Hello at ` + new Date() }));
         clients = [];
     }
 

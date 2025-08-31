@@ -5,27 +5,35 @@
 
 <body>
     <h1>Hello World</h1>
+    <input type="text" id="name">
+    <button id="btn">Submit</button>
     <div id="chatbox"></div>
     <script>
         console.log('Hello World');
         const chatbox = document.getElementById('chatbox');
+        const btn = document.getElementById('btn');
+        const name = document.getElementById('name');
         const messageArray = [];
 
         async function poll() {
             try {
                 console.log('Polling');
-                const res = await fetch('/poll');
+                const res = await fetch(`/poll?name=${name.value}`);
                 const data = await res.json();
                 console.log(data);
                 chatbox.innerHTML += `<h1>${data.message}</h1>`;
                 poll();
             } catch (err) {
-                cosole.log(err);
+                console.log(err);
                 poll();
             }
 
         }
-        poll()
+        btn.addEventListener('click', (e) => {
+            if (name.value.length >= 1) {
+                poll()
+            }
+        });
     </script>
 </body>
 
